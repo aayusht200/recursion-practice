@@ -54,29 +54,42 @@ console.log(flattenArr([1, [2, [3, 4], 5], 6]));
 // - Find a key inside a deeply nested object
 
 function countKeys(data) {
-    let count = 0;
     if (Object.keys(data).length === 0) return 0;
     let [firstKey, firstData] = Object.entries(data)[0];
-    console.log(typeof firstData);
-
-    // if (typeof firstData === 'object') console.log(firstData);
+    let count = 1;
+    if (typeof firstData === 'object' && firstData != null) count += countKeys(firstData);
+    let rest = Object.fromEntries(Object.entries(data).slice(1));
+    count += countKeys(rest);
+    return count;
 }
 
 let data = {
-    id: 101,
-    profile: {
-        personal: {
-            first: 'Aayush',
-            last: 'T',
-        },
-        education: {
-            degree: 'BCA',
-            year: 2024,
+    name: 'Aayush',
+    details: {
+        age: null,
+        location: {
+            city: 'Mumbai',
         },
     },
-    status: 'active',
+    list: { id: 1 },
 };
-countKeys(data);
-// Object.entries(data).forEach((ele) => {
-//     console.log(typeof ele);
-// });
+console.log(countKeys(data));
+
+function findKey(data, key) {}
+let data2 = {
+    name: null,
+    details: {
+        age: 25,
+        location: {
+            city: 'Mumbai',
+        },
+    },
+    list: [{ id: 1 }, { id: 2 }],
+};
+console.log(findKey(data2, 'city')); // "city"
+console.log(findKey(data2, 'age')); // "age"
+console.log(findKey(data2, 'foo')); // null
+console.log(findKey(data2, 'name')); // "found name"
+console.log(findKey(data2, 'city')); // "found city"
+console.log(findKey(data2, 'id')); // "not found id" (arrays skipped)
+console.log(findKey(data2, 'foo')); // "not found foo"
